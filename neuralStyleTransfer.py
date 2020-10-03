@@ -1,3 +1,4 @@
+
 import os
 
 import matplotlib.pyplot as plt
@@ -31,14 +32,14 @@ def readImgs(contentPath, stylePath):
     contentPath = os.path.abspath(contentPath)
     stylePath   = os.path.abspath(stylePath)
 
-    contentImg = Image.open(contentPath)
-    styleImg   = Image.open(stylePath)
+    contentImg = Image.open(contentPath).convert('RGB')
+    styleImg   = Image.open(stylePath).convert('RGB')
 
     return contentImg, styleImg
 
 def convertToTensor(imageTensor):
     transform = transform = transforms.Compose([transforms.Resize(400), transforms.ToTensor(), transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))])
-    imageTensor = transform(imageTensor).to(device)
+    imageTensor = transform(imageTensor).to('cuda:0')
 
     return imageTensor
 
@@ -56,21 +57,17 @@ def gramMatrix(imgFeatures):
 
     return Matrix
 
-if __name__ == '__main__':
-
+def neuralStyle(contentPath, stylePath):
     device = ('cuda:0' if torch.cuda.is_available() else 'cpu')
-    print("device = ",device)
 
     model = models.vgg19(pretrained=True).features
 
     for param in model.parameters():
         param.requires_grad = False
 
-    model.to(device)
+    model.to('cuda:0')
 
-    print(model)
-
-    contentImg, styleImg = readImgs(r'Images\Content\rose.jpg', r'Images\Style\batman.jpg')
+    contentImg, styleImg = readImgs(contentPath, stylePath)
 
     contentImg = convertToTensor(contentImg)
     styleImg   = convertToTensor(styleImg)
@@ -89,10 +86,9 @@ if __name__ == '__main__':
     content_wt = 100
     style_wt = 1e8
 
-    print_after = 500
-    epochs = 4000
+    epochs = 300
 
-    target = contentImg.clone().requires_grad_(True).to(device)
+    target = contentImg.clone().requires_grad_(True).to()
 
     optimizer = torch.optim.Adam([target],lr=0.007)
 
@@ -116,13 +112,7 @@ if __name__ == '__main__':
         totalLoss.backward()
         optimizer.step()
 
-        #if i%print_after == 0:
-        #    trainStyle = convertFromTensor(target)
-        
-        #    plt.imshow(trainStyle, label = "Style")
-        #    plt.show()
-
-    torch.save(model.state_dict(), os.path.abspath(r'pretrained-models\model.pt'))
     trainStyle = convertFromTensor(target)
-    plt.imshow(trainStyle, label = "Style")
-    plt.show()
+    #plt.imshow(trainStyle, label = "Style")
+    #plt.show()
+    return trainStyle
