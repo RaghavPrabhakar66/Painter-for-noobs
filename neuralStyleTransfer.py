@@ -1,4 +1,3 @@
-
 import os
 
 import matplotlib.pyplot as plt
@@ -8,7 +7,7 @@ from PIL import Image
 from torch import cuda
 from torch.cuda import is_available
 from torchvision import *
-import pickle
+import cv2
 
 def modelActivation(x, model):
     layers = {
@@ -37,18 +36,17 @@ def readImgs(contentPath, stylePath):
 
     return contentImg, styleImg
 
-def convertToTensor(imageTensor):
-    transform = transform = transforms.Compose([transforms.Resize(400), transforms.ToTensor(), transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5))])
-    imageTensor = transform(imageTensor).to('cuda:0')
+def convertToTensor(image):
+    transform = transform = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
+    image = transform(image).to('cuda:0')
 
-    return imageTensor
+    return image
 
 def convertFromTensor(imageTensor):
     x = imageTensor.to("cpu").clone().detach().numpy().squeeze()
     x = x.transpose(1, 2, 0)
-    x = x*np.array((0.5,0.5,0.5)) + np.array((0.5,0.5,0.5))
+#    x = x*np.array((0.5,0.5,0.5)) + np.array((0.5,0.5,0.5))
     return x
-
 
 def gramMatrix(imgFeatures):
     _, d, h, w  = imgFeatures.size()
@@ -106,13 +104,18 @@ def neuralStyle(contentPath, stylePath):
         
         totalLoss = styleLoss + contentLoss
 
-        print("epoch : {} Total Loss : {}".format(i, totalLoss))
+#        print("epoch : {} Total Loss : {}".format(i, totalLoss))
 
         optimizer.zero_grad()
         totalLoss.backward()
         optimizer.step()
 
     trainStyle = convertFromTensor(target)
-    #plt.imshow(trainStyle, label = "Style")
+    utils.save_image(target, 'generated1.png')
+    #plt.imshow(trainStyle)
     #plt.show()
+    trainStyle = convertFromTensor(target)
     return trainStyle
+
+if __name__ == '__main__':
+    styleImage = neuralStyle(r'serverUpload\testContent.jpg', r'serverUpload\testStyle.jpg')
