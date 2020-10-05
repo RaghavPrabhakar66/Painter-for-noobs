@@ -1,13 +1,12 @@
 import os
 
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 from PIL import Image
-from torch import cuda
-from torch.cuda import is_available
 from torchvision import *
-import cv2
+import streamlit as st
+
+from inferenceWebapp import *
 
 def modelActivation(x, model):
     layers = {
@@ -104,7 +103,7 @@ def neuralStyle(contentPath, stylePath):
         
         totalLoss = styleLoss + contentLoss
 
-#        print("epoch : {} Total Loss : {}".format(i, totalLoss))
+        #print("epoch : {} Total Loss : {}".format(i, totalLoss))
 
         optimizer.zero_grad()
         totalLoss.backward()
@@ -112,10 +111,6 @@ def neuralStyle(contentPath, stylePath):
 
     trainStyle = convertFromTensor(target)
     utils.save_image(target, 'generated1.png')
-    #plt.imshow(trainStyle)
-    #plt.show()
     trainStyle = convertFromTensor(target)
-    return trainStyle
 
-if __name__ == '__main__':
-    styleImage = neuralStyle(r'serverUpload\testContent.jpg', r'serverUpload\testStyle.jpg')
+    return trainStyle
