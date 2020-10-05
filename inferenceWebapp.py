@@ -5,7 +5,7 @@ import torch
 
 import matplotlib.pyplot as plt
 
-from neuralStyleTransfer import *
+from neuralStyleTransfer1 import *
 import time
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
