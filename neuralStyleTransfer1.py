@@ -37,7 +37,7 @@ def readImgs(contentPath, stylePath):
 
 def convertToTensor(image):
     transform = transform = transforms.Compose([transforms.Resize(512), transforms.ToTensor()])
-    image = transform(image).to('cuda:0')
+    image = transform(image).to('cpu')
 
     return image
 
@@ -55,14 +55,15 @@ def gramMatrix(imgFeatures):
     return Matrix
 
 def neuralStyle(contentPath, stylePath):
-    device = ('cuda:0' if torch.cuda.is_available() else 'cpu')
+    #device = ('cuda:0' if torch.cuda.is_available() else 'cpu')
+    device = 'cpu'
 
     model = models.vgg19(pretrained=True).features
 
     for param in model.parameters():
         param.requires_grad = False
 
-    model.to('cuda:0')
+    model.to('cpu')
 
     contentImg, styleImg = readImgs(contentPath, stylePath)
 
