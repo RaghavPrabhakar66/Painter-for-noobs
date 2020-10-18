@@ -39,7 +39,7 @@ if __name__ == '__main__':
         showStatus = st.sidebar.button('Submit')
 
         if showStyleImage:
-            style = Image.open(stylePath[option]).convert('RGB')
+            style = Image.open(os.path.abspath(stylePath[option])).convert('RGB')
             st.sidebar.image(style, caption='Style Image', use_column_width=True)
 
     content_uploaded_file = st.file_uploader("Choose an image file", type=["png", 'jpg', 'jpeg', 'tiff'], key="1")
