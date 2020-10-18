@@ -3,8 +3,6 @@ from PIL import Image
 import streamlit as st
 import torch
 
-import matplotlib.pyplot as plt
-
 from neuralStyleTransfer1 import *
 import time
 
