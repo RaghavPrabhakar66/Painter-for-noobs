@@ -55,7 +55,8 @@ if __name__ == '__main__':
 
     if clicked:
         startTime = time.time()
-        device = ('cuda:0' if torch.cuda.is_available() else 'cpu')
+        #device = ('cuda:0' if torch.cuda.is_available() else 'cpu')
+        device = 'cpu'
 
         model = models.vgg19(pretrained=True).features
 
