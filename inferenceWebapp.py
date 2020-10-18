@@ -8,12 +8,12 @@ import time
 
 st.set_option('deprecation.showfileUploaderEncoding', False)
 stylePath = {
-    'Vangogh - Starry Night'    : r'Images\Style\vangogh.png',
-    'Kadinsky - Several Circles': r'Images\Style\Kandinsky-Several Circles.png',
-    'Haring - Dance'            : r'Images\Style\Haring-Dance.png',
-    'Picasso - Weeping Woman'   : r'Images\Style\picasso-weeping woman.png',
-    'Vangogh - Whitefield'      : r'Images\Style\Vangogh-whitefield.png',
-    'Custom Style'              : r'Images\Style\Custom Style.jpg'
+    'Vangogh - Starry Night'    : r'Images/Style/vangogh.png',
+    'Kadinsky - Several Circles': r'Images/Style/Kandinsky-Several Circles.png',
+    'Haring - Dance'            : r'Images/Style/Haring-Dance.png',
+    'Picasso - Weeping Woman'   : r'Images/Style/picasso-weeping woman.png',
+    'Vangogh - Whitefield'      : r'Images/Style/Vangogh-whitefield.png',
+    'Custom Style'              : r'Images/Style/Custom Style.jpg'
 }
 
 if __name__ == '__main__':
@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
             if style_uploaded_file is not None:
                 im = Image.open(style_uploaded_file).convert('RGB')
-                im.save(r'Images\Style\Custom Style.jpg', quality=95)
+                im.save(r'Images/Style/Custom Style.jpg', quality=95)
             
         showStyleImage = st.sidebar.checkbox("Want to see the image", key='1')
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     if content_uploaded_file is not None:
         im = Image.open(content_uploaded_file).convert('RGB')
-        im.save(r'serverUpload\testContent.jpg', quality=95)
+        im.save(r'serverUpload/testContent.jpg', quality=95)
         if showContentImage:
             st.image(im, caption='Content Image', use_column_width=True)
 
@@ -64,7 +64,7 @@ if __name__ == '__main__':
 
         model.to(device)
 
-        contentImg, styleImg = readImgs(r'serverUpload\testContent.jpg', os.path.abspath(stylePath[option]))
+        contentImg, styleImg = readImgs(r'serverUpload/testContent.jpg', os.path.abspath(stylePath[option]))
 
         contentImg = convertToTensor(contentImg)
         styleImg   = convertToTensor(styleImg)
